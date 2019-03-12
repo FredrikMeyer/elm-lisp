@@ -1,19 +1,15 @@
-module LispParser exposing (Sexp(..), Value(..), parseSexp, parseValue)
+module LispParser exposing (parseSexp, parseValue)
 
 import Parser exposing (..)
 import Set
+import Types exposing (..)
 
 
-type Sexp
-    = Val Value
-    | ListOfSexps (List Sexp)
-    | SexpError (List DeadEnd)
 
+{--
 
-type Value
-    = Integer Int
-    | Str String
-    | ValueError (List DeadEnd)
+Builds an AST.
+--}
 
 
 parseSexp : String -> Sexp
@@ -27,7 +23,9 @@ parseSexp text =
             sexp_
 
         Err error ->
-            SexpError error
+            error
+                |> ParserError
+                |> SexpError
 
 
 parseValue : String -> Value
@@ -41,7 +39,7 @@ parseValue text =
             val
 
         Err error ->
-            ValueError error
+            ValueError <| ParserError error
 
 
 sexp : Parser Sexp
@@ -76,7 +74,7 @@ value : Parser Value
 value =
     oneOf
         [ map Integer int
-        , map Str <|
+        , map Symbol <|
             variable
                 { start = \c -> Char.isAlphaNum c || (c /= '(' && c /= ')' && c /= ' ')
                 , inner = \c -> Char.isAlphaNum c || (c /= '(' && c /= ')' && c /= ' ')

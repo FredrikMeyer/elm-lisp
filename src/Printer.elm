@@ -1,6 +1,6 @@
 module Printer exposing (toString)
 
-import LispParser exposing (..)
+import Types exposing (Error(..), F(..), Sexp(..), Value(..))
 
 
 toString : Sexp -> String
@@ -19,8 +19,13 @@ toString sexp =
             in
             "(" ++ conc ++ ")"
 
-        SexpError _ ->
-            " [ ERROR READING SEXP ]"
+        SexpError error ->
+            case error of
+                ErrorMessage message ->
+                    "ERROR: " ++ message
+
+                _ ->
+                    " [ ERROR READING SEXP ]"
 
 
 value : Value -> String
@@ -29,8 +34,21 @@ value val =
         Integer i ->
             String.fromInt i
 
-        Str s ->
-            s
+        Symbol s ->
+            "SYMBOL: " ++ s
 
-        ValueError _ ->
-            "SOME ERROR"
+        Function f ->
+            case f of
+                Numeric function ->
+                    "`function: " ++ function.name ++ "`"
+
+        ValueError e ->
+            case e of
+                TypeError s ->
+                    "TYPERROR: " ++ s
+
+                ErrorMessage s ->
+                    "ERROR: " ++ s
+
+                ParserError _ ->
+                    "PARSE ERROR"

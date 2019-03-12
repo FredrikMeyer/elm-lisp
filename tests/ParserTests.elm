@@ -152,7 +152,7 @@ canParseValue =
                         parseValue inp
                 in
                 case parsed of
-                    Str s ->
+                    Symbol s ->
                         Expect.equal s inp
 
                     _ ->
@@ -167,7 +167,7 @@ canParseValue =
                         parseValue inp
                 in
                 case parsed of
-                    Str s ->
+                    Symbol s ->
                         Expect.equal "hei" s
 
                     _ ->
@@ -197,7 +197,7 @@ canParseValue =
                         parseValue inp
                 in
                 case parsed of
-                    Str "+" ->
+                    Symbol "+" ->
                         Expect.pass
 
                     v ->

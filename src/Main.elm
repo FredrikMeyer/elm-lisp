@@ -1,17 +1,19 @@
 module Main exposing (Model, main)
 
 import Browser exposing (Document)
+import Environment
+import Eval
 import Html exposing (Html, div, li, p, text, ul)
 import Html.Attributes as Attributes
 import Html.Events
-import LispParser
-import Printer
+import Types exposing (Environment)
 
 
 type alias Model =
     { inputText : String
+    , inputs : List String
     , results : List String
-    , number : Int
+    , environment : Environment
     }
 
 
@@ -24,7 +26,8 @@ init : () -> ( Model, Cmd Msg )
 init _ =
     ( { inputText = ""
       , results = []
-      , number = 0
+      , inputs = []
+      , environment = Environment.initialEnvironment
       }
     , Cmd.none
     )
@@ -51,19 +54,28 @@ view model =
                     ]
                 ]
             , div
-                [ Attributes.style "border" "1px solid black"
-                , Attributes.style "padding" "10px"
-                , Attributes.style "width" "70%"
+                [ Attributes.style "display" "flex"
                 ]
-                [ ul [] <|
-                    List.map
-                        (\r -> li [] [ text r ])
-                        model.results
+                [ listOfValues model.inputs
+                , listOfValues model.results
                 ]
-            , Html.p [] [ text <| String.fromInt model.number ]
             ]
         ]
     }
+
+
+listOfValues : List String -> Html Msg
+listOfValues list =
+    div
+        [ Attributes.style "border" "1px solid black"
+        , Attributes.style "padding" "10px"
+        , Attributes.style "width" "70%"
+        ]
+        [ ul [] <|
+            List.map
+                (\r -> li [] [ text r ])
+                list
+        ]
 
 
 update : Msg -> Model -> ( Model, Cmd msg )
@@ -75,12 +87,15 @@ update msg model =
 
             else
                 let
+                    env =
+                        model.environment
+
                     parsedString =
-                        evalString model.inputText
+                        Eval.evalString env model.inputText
                 in
                 ( { model
-                    | number = model.number + 1
-                    , results = parsedString :: model.results
+                    | results = parsedString :: model.results
+                    , inputs = model.inputText :: model.inputs
                     , inputText = ""
                   }
                 , Cmd.none
@@ -88,15 +103,6 @@ update msg model =
 
         InputText s ->
             ( { model | inputText = s }, Cmd.none )
-
-
-evalString : String -> String
-evalString inp =
-    let
-        parsed =
-            LispParser.parseSexp inp
-    in
-    Printer.toString parsed
 
 
 main : Program () Model Msg
