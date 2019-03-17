@@ -24,8 +24,11 @@ toString sexp =
                 ErrorMessage message ->
                     "ERROR: " ++ message
 
-                _ ->
-                    " [ ERROR READING SEXP ]"
+                ParserError message ->
+                    "PARSING ERROR: " ++ message
+
+                TypeError message ->
+                    "TYPE ERROR: " ++ message
 
 
 value : Value -> String

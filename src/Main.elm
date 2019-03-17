@@ -3,9 +3,11 @@ module Main exposing (Model, main)
 import Browser exposing (Document)
 import Environment
 import Eval
-import Html exposing (Html, div, li, p, text, ul)
+import Html exposing (Html, div, li, text, ul)
 import Html.Attributes as Attributes
 import Html.Events
+import LispParser
+import Printer
 import Types exposing (Environment)
 
 
@@ -90,11 +92,18 @@ update msg model =
                     env =
                         model.environment
 
-                    parsedString =
-                        Eval.evalString env model.inputText
+                    parsedInput =
+                        LispParser.parseSexp model.inputText
+
+                    ( newEnv, result ) =
+                        Eval.eval env parsedInput
+
+                    res =
+                        Printer.toString result
                 in
                 ( { model
-                    | results = parsedString :: model.results
+                    | results = res :: model.results
+                    , environment = newEnv
                     , inputs = model.inputText :: model.inputs
                     , inputText = ""
                   }

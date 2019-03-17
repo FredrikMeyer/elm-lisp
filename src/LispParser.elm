@@ -23,7 +23,7 @@ parseSexp text =
             sexp_
 
         Err error ->
-            error
+            deadEndsToString error
                 |> ParserError
                 |> SexpError
 
@@ -39,7 +39,7 @@ parseValue text =
             val
 
         Err error ->
-            ValueError <| ParserError error
+            ValueError <| ParserError (deadEndsToString error)
 
 
 sexp : Parser Sexp

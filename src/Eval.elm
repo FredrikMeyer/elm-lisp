@@ -1,44 +1,86 @@
-module Eval exposing (evalString)
+module Eval exposing (eval)
 
 import Dict exposing (Dict, get)
+import Environment
 import LispParser
 import Printer
 import Result exposing (Result(..))
 import Types exposing (..)
 
 
-eval : Environment -> Sexp -> Sexp
+eval : Environment -> Sexp -> ( Environment, Sexp )
 eval env sexp =
     case sexp of
         Val v ->
             case v of
                 Symbol str ->
-                    let
-                        maybeVar =
-                            Dict.get str env.vars
-                    in
-                    case maybeVar of
+                    case Environment.get str env of
                         Nothing ->
-                            SexpError (ErrorMessage "Unknown var")
+                            ( env, SexpError (ErrorMessage "Unknown var") )
 
                         Just var ->
-                            Val var
+                            ( env, Val var )
 
                 _ ->
-                    sexp
+                    ( env, sexp )
 
         ListOfSexps l ->
             case l of
                 [] ->
-                    SexpError (ErrorMessage "() is illegal.")
+                    ( env, SexpError (ErrorMessage "() is illegal.") )
 
                 f :: args ->
-                    Val <|
-                        apply (toValue env <| eval env f) <|
-                            List.map (toValue env) args
+                    case Debug.log "proc" f of
+                        Val (Symbol "def!") ->
+                            case Debug.log "args" args of
+                                [ Val (Symbol key), val ] ->
+                                    let
+                                        evaluatedVal =
+                                            toValue env val
+                                    in
+                                    ( Debug.log "newEnv" <| Environment.set key evaluatedVal env
+                                    , Val evaluatedVal
+                                    )
+
+                                _ ->
+                                    ( env, SexpError <| ErrorMessage "???" )
+
+                        Val (Symbol "let") ->
+                            case args of
+                                [ ListOfSexps [ Val (Symbol key), v ], rest ] ->
+                                    let
+                                        evaluatedVal =
+                                            toValue env v
+
+                                        scopedEnv =
+                                            Environment.set key evaluatedVal env
+
+                                        ( newEnv, res ) =
+                                            eval scopedEnv rest
+                                    in
+                                    ( env, res )
+
+                                _ ->
+                                    ( env, SexpError <| ErrorMessage "Syntax error" )
+
+                        _ ->
+                            let
+                                proc =
+                                    Tuple.second (eval env f)
+                                        |> toValue env
+                            in
+                            ( env
+                            , Val <|
+                                apply (toValue env <| Tuple.second (eval env f)) <|
+                                    (args
+                                        |> List.map (eval env)
+                                        |> List.map Tuple.second
+                                        |> List.map (toValue env)
+                                    )
+                            )
 
         SexpError _ ->
-            SexpError (ErrorMessage "Something wrong happened")
+            ( env, sexp )
 
 
 toValue : Environment -> Sexp -> Value
@@ -51,6 +93,7 @@ toValue env sexp =
             let
                 evaluated =
                     eval env sexp
+                        |> Tuple.second
             in
             case evaluated of
                 Val v ->
@@ -64,16 +107,6 @@ toValue env sexp =
 
         SexpError e ->
             ValueError e
-
-
-evalString : Environment -> String -> String
-evalString environment inp =
-    let
-        parsed =
-            LispParser.parseSexp inp
-    in
-    eval environment parsed
-        |> Printer.toString
 
 
 apply : Value -> List Value -> Value
@@ -93,7 +126,6 @@ apply sexp args =
                         Ok b ->
                             Integer b
 
-        --                    Integer 1
         _ ->
             ValueError <| ErrorMessage "Cannot eval value"
 
@@ -105,7 +137,7 @@ applyFunction f args =
 
 applyNumericFunction : IntIntIntFunction -> Int -> List Value -> Result Error Int
 applyNumericFunction f init args =
-    case args of
+    case Debug.log "args : " args of
         [] ->
             Ok init
 
@@ -116,3 +148,7 @@ applyNumericFunction f init args =
 
                 _ ->
                     Err <| TypeError "Not an int."
+
+
+
+--toList : List Sexp -> List (String, )

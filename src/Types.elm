@@ -1,7 +1,6 @@
-module Types exposing (Either(..), Environment, Error(..), F(..), IntIntIntFunction, Sexp(..), Value(..))
+module Types exposing (Either(..), Environment(..), Error(..), F(..), IntIntIntFunction, Sexp(..), Value(..))
 
 import Dict exposing (Dict)
-import Parser exposing (DeadEnd)
 
 
 type Sexp
@@ -11,9 +10,13 @@ type Sexp
 
 
 type Error
-    = ParserError (List DeadEnd)
+    = ParserError String
     | ErrorMessage String
     | TypeError String
+
+
+
+-- TODO: keyword type (typ def, let osv)
 
 
 type Value
@@ -27,9 +30,15 @@ type Value
 -- ENVIRONMENT
 
 
-type alias Environment =
-    { vars : Dict String Value
-    }
+type Environment
+    = Environment
+        { vars : Frame
+        , outer : Maybe Environment
+        }
+
+
+type alias Frame =
+    Dict String Value
 
 
 type F

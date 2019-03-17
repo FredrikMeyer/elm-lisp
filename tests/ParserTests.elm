@@ -5,6 +5,7 @@ import Fuzz exposing (Fuzzer, int, list, string)
 import LispParser exposing (..)
 import Parser
 import Test exposing (..)
+import Types exposing (..)
 
 
 suite : Test
@@ -121,6 +122,16 @@ canParseSexp =
 
                     v ->
                         Expect.fail (Debug.toString v)
+        , test "unbalanced parens should not parse" <|
+            \_ ->
+                let
+                    inp =
+                        "(+ 1 2 3)))"
+
+                    parsed =
+                        Debug.log "unb " (parseSexp inp)
+                in
+                Expect.pass
         ]
 
 
