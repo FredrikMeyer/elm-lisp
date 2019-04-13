@@ -46,7 +46,7 @@ initialEnvironment =
     emptyEnvironment
         |> set "+"
             (Function <|
-                Numeric
+                NumericInt
                     { f = \a -> \b -> a + b
                     , init = 0
                     , name = "PLUS"
@@ -54,7 +54,7 @@ initialEnvironment =
             )
         |> set "*"
             (Function <|
-                Numeric
+                NumericInt
                     { f = \a -> \b -> a * b
                     , init = 1
                     , name = "MULTIPLY"
@@ -62,9 +62,17 @@ initialEnvironment =
             )
         |> set "-"
             (Function <|
-                Numeric
+                NumericInt
                     { f = \a -> \b -> -a - b
                     , init = 0
                     , name = "SUBTRACT"
+                    }
+            )
+        |> set "/"
+            (Function <|
+                NumericFloat
+                    { f = \a -> \b -> (1 / a) / b
+                    , init = 1
+                    , name = "DIVIDE"
                     }
             )

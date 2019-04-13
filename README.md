@@ -8,7 +8,7 @@ I try to follow the instructions at [Mal](https://github.com/kanaka/mal/blob/mas
 - [x] Step 0: REPL
 - [x] Step 1: Read and print 
 - [x] Step 2: Eval
-- [ ] Step 3: Environments 
+- [x] Step 3: Environments (implemented `let` instead of `let*`)
 - [ ] Step 4: If fn do
 - [ ] Step 5: Tail call optimization
 - [ ] Step 6: Files, mutation, and evil

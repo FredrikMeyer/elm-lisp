@@ -23,7 +23,7 @@ parseSexp text =
             sexp_
 
         Err error ->
-            deadEndsToString error
+            Debug.toString error
                 |> ParserError
                 |> SexpError
 
@@ -39,7 +39,7 @@ parseValue text =
             val
 
         Err error ->
-            ValueError <| ParserError (deadEndsToString error)
+            ValueError <| ParserError (Debug.toString error)
 
 
 sexp : Parser Sexp
@@ -73,7 +73,18 @@ sexpHelper revSexps =
 value : Parser Value
 value =
     oneOf
-        [ map Integer int
+        [ number
+            { int = Just Integer
+            , float = Just Float_
+            , binary = Nothing
+            , hex = Nothing
+            , octal = Nothing
+            }
+        , map (\_ -> Boolean True) (keyword "true")
+        , map (\_ -> Boolean True) (keyword "#t")
+        , map (\_ -> Boolean False) (keyword "false")
+        , map (\_ -> Boolean False) (keyword "#f")
+        , map (\_ -> Nil) (keyword "nil")
         , map Symbol <|
             variable
                 { start = \c -> Char.isAlphaNum c || (c /= '(' && c /= ')' && c /= ' ')

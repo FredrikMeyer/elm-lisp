@@ -44,7 +44,7 @@ view model =
             , Html.form
                 [ Html.Events.onSubmit FormSubmitted
                 ]
-                [ Html.input
+                [ Html.textarea
                     [ Html.Events.onInput InputText
                     , Attributes.style "width" "70%"
                     , Attributes.value model.inputText

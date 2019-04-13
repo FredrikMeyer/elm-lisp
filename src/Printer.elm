@@ -34,15 +34,32 @@ toString sexp =
 value : Value -> String
 value val =
     case val of
+        Boolean b ->
+            case b of
+                True ->
+                    "#t"
+
+                False ->
+                    "#f"
+
         Integer i ->
             String.fromInt i
+
+        Float_ f ->
+            String.fromFloat f
+
+        Nil ->
+            "nil"
 
         Symbol s ->
             "SYMBOL: " ++ s
 
         Function f ->
             case f of
-                Numeric function ->
+                NumericInt function ->
+                    "`function: " ++ function.name ++ "`"
+
+                NumericFloat function ->
                     "`function: " ++ function.name ++ "`"
 
         ValueError e ->
