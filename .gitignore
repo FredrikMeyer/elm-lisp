@@ -1,2 +1,7 @@
 elm-stuff
 index.html
+.tern-port
+dist/
+elm.js
+node_modules
+.cache/

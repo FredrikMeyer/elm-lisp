@@ -1,6 +1,6 @@
 module Main exposing (Model, main)
 
-import Browser exposing (Document)
+import Browser
 import Environment
 import Eval
 import Html exposing (Html, div, li, text, ul)
@@ -35,43 +35,54 @@ init _ =
     )
 
 
-view : Model -> Document Msg
+main : Program () Model Msg
+main =
+    Browser.element
+        { init = init
+        , view = view
+        , update = update
+        , subscriptions = subscriptions
+        }
+
+
+view : Model -> Html Msg
 view model =
-    { title = "Let's Lisp"
-    , body =
-        [ div []
-            [ Html.h1 [] [ text "Give me some Lisp" ]
-            , Html.form
+    div []
+        [ Html.h1
+            [ Attributes.id "header"
+            ]
+            [ text "Give me some Lisp" ]
+        , div [ Attributes.id "container" ]
+            [ Html.form
                 [ Html.Events.onSubmit FormSubmitted
+                , Attributes.id "form"
                 ]
                 [ Html.textarea
                     [ Html.Events.onInput InputText
-                    , Attributes.style "width" "70%"
+                    , Attributes.id "inputArea"
                     , Attributes.value model.inputText
                     ]
                     []
                 , Html.button
-                    []
+                    [ Attributes.id "button"
+                    ]
                     [ text "Trykk"
                     ]
                 ]
             , div
-                [ Attributes.style "display" "flex"
+                [ Attributes.id "results"
                 ]
                 [ listOfValues model.inputs
                 , listOfValues model.results
                 ]
             ]
         ]
-    }
 
 
 listOfValues : List String -> Html Msg
 listOfValues list =
     div
-        [ Attributes.style "border" "1px solid black"
-        , Attributes.style "padding" "10px"
-        , Attributes.style "width" "70%"
+        [ Attributes.id "result"
         ]
         [ ul [] <|
             List.map
@@ -80,7 +91,7 @@ listOfValues list =
         ]
 
 
-update : Msg -> Model -> ( Model, Cmd msg )
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         FormSubmitted ->
@@ -114,17 +125,6 @@ update msg model =
             ( { model | inputText = s }, Cmd.none )
 
 
-main : Program () Model Msg
-main =
-    Browser.document
-        { init = init
-        , subscriptions = subscriptions
-        , update = update
-        , view = view
-        }
-
-
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Sub.batch
-        []
+    Sub.none

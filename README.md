@@ -15,3 +15,15 @@ I try to follow the instructions at [Mal](https://github.com/kanaka/mal/blob/mas
 - [ ] Step 7: Quoting
 - [ ] Step 8: Macros 
 - [ ] Step 9: Try 
+
+## Run in browser
+
+```
+parcel src/static/index.html
+```
+
+## Run tests
+
+```
+elm-test --watch
+```
