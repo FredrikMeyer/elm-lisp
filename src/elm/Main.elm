@@ -7,6 +7,7 @@ import Html exposing (Html, div, li, text, ul)
 import Html.Attributes as Attributes
 import Html.Events
 import LispParser
+import Ports exposing (cmdEnter)
 import Printer
 import Types exposing (Environment)
 
@@ -22,6 +23,7 @@ type alias Model =
 type Msg
     = FormSubmitted
     | InputText String
+    | CmdEnter
 
 
 init : () -> ( Model, Cmd Msg )
@@ -100,21 +102,12 @@ update msg model =
 
             else
                 let
-                    env =
-                        model.environment
-
-                    parsedInput =
-                        LispParser.parseSexp model.inputText
-
-                    ( newEnv, result ) =
-                        Eval.eval env parsedInput
-
-                    res =
-                        Printer.toString result
+                    ( resultString, newEnvironment ) =
+                        submitCommandToLisp model
                 in
                 ( { model
-                    | results = res :: model.results
-                    , environment = newEnv
+                    | results = resultString :: model.results
+                    , environment = newEnvironment
                     , inputs = model.inputText :: model.inputs
                     , inputText = ""
                   }
@@ -124,7 +117,40 @@ update msg model =
         InputText s ->
             ( { model | inputText = s }, Cmd.none )
 
+        CmdEnter ->
+            let
+                newModel =
+                    let
+                        ( resultString, newEnvironment ) =
+                            submitCommandToLisp model
+                    in
+                    { model
+                        | results = resultString :: model.results
+                        , environment = newEnvironment
+                        , inputs = model.inputText :: model.inputs
+                        , inputText = ""
+                    }
+            in
+            ( newModel, Cmd.none )
+
+
+submitCommandToLisp : Model -> ( String, Environment )
+submitCommandToLisp model =
+    let
+        env =
+            model.environment
+
+        parsedInput =
+            LispParser.parseSexp model.inputText
+
+        ( newEnv, result ) =
+            Eval.eval env parsedInput
+    in
+    ( Printer.toString result, newEnv )
+
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.none
+subscriptions _ =
+    Sub.batch
+        [ cmdEnter (\_ -> CmdEnter)
+        ]
