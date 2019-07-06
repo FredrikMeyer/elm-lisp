@@ -22,6 +22,12 @@ I try to follow the instructions at [Mal](https://github.com/kanaka/mal/blob/mas
 parcel src/static/index.html
 ```
 
+## Build
+
+```
+parcel build src/static/index.html --out-dir docs --public-url ./
+```
+
 ## Run tests
 
 ```
