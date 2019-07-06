@@ -9,7 +9,7 @@ I try to follow the instructions at [Mal](https://github.com/kanaka/mal/blob/mas
 - [x] Step 1: Read and print 
 - [x] Step 2: Eval
 - [x] Step 3: Environments (implemented `let` instead of `let*`)
-- [ ] Step 4: If fn do
+- [x] Step 4: If fn do (mostly)
 - [ ] Step 5: Tail call optimization
 - [ ] Step 6: Files, mutation, and evil
 - [ ] Step 7: Quoting
