@@ -19,17 +19,23 @@ I try to follow the instructions at [Mal](https://github.com/kanaka/mal/blob/mas
 ## Run in browser
 
 ```
-parcel src/static/index.html
+npm start
 ```
 
 ## Build
 
 ```
-parcel build src/static/index.html --out-dir docs --public-url ./
+npm run build
 ```
 
 ## Run tests
 
 ```
+npm test
+```
+
+Or
+```
 elm-test --watch
 ```
+for live updates.
