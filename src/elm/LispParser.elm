@@ -74,11 +74,11 @@ value : Parser Value
 value =
     oneOf
         [ number
-            { int = Just Integer
-            , float = Just Float_
+            { float = Just Float_
             , binary = Nothing
             , hex = Nothing
             , octal = Nothing
+            , int = Just (Float_ << toFloat)
             }
         , map (\_ -> Boolean True) (keyword "true")
         , map (\_ -> Boolean True) (keyword "#t")

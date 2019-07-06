@@ -144,18 +144,6 @@ apply val args =
     case val of
         Function f ->
             case f of
-                NumericInt function ->
-                    let
-                        applied =
-                            applyNumericFunction function function.init args
-                    in
-                    case applied of
-                        Err e ->
-                            ValueError e
-
-                        Ok b ->
-                            Integer b
-
                 NumericFloat function ->
                     let
                         applied =
@@ -170,9 +158,6 @@ apply val args =
 
         Boolean _ ->
             ValueError <| TypeError "Cannot apply bool"
-
-        Integer _ ->
-            ValueError <| TypeError "Cannot apply integer."
 
         Float_ _ ->
             ValueError <| TypeError "Cannot apply float."
@@ -200,30 +185,8 @@ applyFloatFunction f init args =
 
         h :: rest ->
             case h of
-                Integer i ->
-                    applyFloatFunction f (f.f init (toFloat i)) rest
-
                 Float_ i ->
                     applyFloatFunction f (f.f init i) rest
 
                 _ ->
                     Err <| TypeError "Not a number."
-
-
-applyNumericFunction : IntIntIntFunction -> Int -> List Value -> Result Error Int
-applyNumericFunction f init args =
-    case Debug.log "args : " args of
-        [] ->
-            Ok init
-
-        h :: rest ->
-            case h of
-                Integer i ->
-                    applyNumericFunction f (f.f init i) rest
-
-                _ ->
-                    Err <| TypeError "Not an int."
-
-
-
---toList : List Sexp -> List (String, )

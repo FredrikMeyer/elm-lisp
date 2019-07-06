@@ -13,6 +13,7 @@ suite : Test
 suite =
     describe "Test eval"
         [ simpleArithmetic
+        , handleFloat
         ]
 
 

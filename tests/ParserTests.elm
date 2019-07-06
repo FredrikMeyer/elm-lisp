@@ -148,7 +148,7 @@ canParseValue =
                         parseValue inp
                 in
                 case parsed of
-                    Integer 55 ->
+                    Float_ a ->
                         Expect.pass
 
                     _ ->

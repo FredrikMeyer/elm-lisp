@@ -42,9 +42,6 @@ value val =
                 False ->
                     "#f"
 
-        Integer i ->
-            String.fromInt i
-
         Float_ f ->
             String.fromFloat f
 
@@ -56,9 +53,6 @@ value val =
 
         Function f ->
             case f of
-                NumericInt function ->
-                    "`function: " ++ function.name ++ "`"
-
                 NumericFloat function ->
                     "`function: " ++ function.name ++ "`"
 

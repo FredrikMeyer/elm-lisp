@@ -1,4 +1,4 @@
-module Types exposing (Either(..), Environment(..), Error(..), F(..), FloatFloatFloatFunction, IntIntIntFunction, Sexp(..), Value(..))
+module Types exposing (Either(..), Environment(..), Error(..), F(..), FloatFloatFloatFunction, Sexp(..), Value(..))
 
 import Dict exposing (Dict)
 
@@ -20,8 +20,7 @@ type Error
 
 
 type Value
-    = Integer Int
-    | Float_ Float
+    = Float_ Float
     | Nil
     | Symbol String
     | Boolean Bool
@@ -45,15 +44,7 @@ type alias Frame =
 
 
 type F
-    = NumericInt IntIntIntFunction
-    | NumericFloat FloatFloatFloatFunction
-
-
-type alias IntIntIntFunction =
-    { f : Int -> Int -> Int
-    , init : Int
-    , name : String
-    }
+    = NumericFloat FloatFloatFloatFunction
 
 
 type alias FloatFloatFloatFunction =
