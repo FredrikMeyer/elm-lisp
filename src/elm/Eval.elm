@@ -33,13 +33,13 @@ eval env sexp =
                 f :: args ->
                     case f of
                         Val (Symbol "def!") ->
-                            case Debug.log "args" args of
+                            case args of
                                 [ Val (Symbol key), val ] ->
                                     let
                                         evaluatedVal =
                                             toValue env val
                                     in
-                                    ( Debug.log "newEnv" <| Environment.set key evaluatedVal env
+                                    ( Environment.set key evaluatedVal env
                                     , Val evaluatedVal
                                     )
 
@@ -69,9 +69,6 @@ eval env sexp =
                             case args of
                                 [ ListOfSexps a, rest ] ->
                                     let
-                                        y =
-                                            Debug.log "rgs" args
-
                                         values =
                                             List.map (toValue env) a
                                                 |> List.map toSymbolString
@@ -233,9 +230,6 @@ apply val args =
                                     args
                                     params
                                 )
-
-                        l =
-                            Debug.log "updenv" updatedEnv
 
                         evaluated =
                             eval updatedEnv body

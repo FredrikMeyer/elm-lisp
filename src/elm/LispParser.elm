@@ -23,7 +23,8 @@ parseSexp text =
             sexp_
 
         Err error ->
-            Debug.toString error
+            --            error
+            "parserError"
                 |> ParserError
                 |> SexpError
 
@@ -39,7 +40,7 @@ parseValue text =
             val
 
         Err error ->
-            ValueError <| ParserError (Debug.toString error)
+            ValueError <| ParserError "parsererror"
 
 
 sexp : Parser Sexp
