@@ -45,6 +45,15 @@ type alias Frame =
 
 type F
     = NumericFloat FloatFloatFloatFunction
+    | FloatFloatBoolFunction
+        { f : Float -> Float -> Bool
+        , name : String
+        }
+    | UserFunction
+        { env : Environment
+        , params : List String
+        , body : Sexp
+        }
 
 
 type alias FloatFloatFloatFunction =

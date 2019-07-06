@@ -1,4 +1,4 @@
-module Environment exposing (find, get, initialEnvironment, set)
+module Environment exposing (extend, find, get, initialEnvironment, set)
 
 import Dict exposing (Dict)
 import Types exposing (..)
@@ -34,6 +34,14 @@ get key env =
 
         Just (Environment { vars }) ->
             Dict.get key vars
+
+
+extend : Environment -> Environment
+extend env =
+    Environment
+        { vars = Dict.empty
+        , outer = Just env
+        }
 
 
 emptyEnvironment : Environment
@@ -74,5 +82,26 @@ initialEnvironment =
                     { f = \a -> \b -> (1 / a) / b
                     , init = 1
                     , name = "DIVIDE"
+                    }
+            )
+        |> set "<"
+            (Function <|
+                FloatFloatBoolFunction
+                    { f = \a -> \b -> a < b
+                    , name = "LESS THAN"
+                    }
+            )
+        |> set ">"
+            (Function <|
+                FloatFloatBoolFunction
+                    { f = \a -> \b -> a > b
+                    , name = "GREATER THAN"
+                    }
+            )
+        |> set "="
+            (Function <|
+                FloatFloatBoolFunction
+                    { f = \a -> \b -> a == b
+                    , name = "EQUAL"
                     }
             )

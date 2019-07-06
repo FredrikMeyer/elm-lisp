@@ -70,16 +70,27 @@ sexpHelper revSexps =
         ]
 
 
+myNumber : Parser Float
+myNumber =
+    number
+        { float = Just identity
+        , binary = Nothing
+        , hex = Nothing
+        , octal = Nothing
+        , int = Just toFloat
+        }
+
+
 value : Parser Value
 value =
     oneOf
-        [ number
-            { float = Just Float_
-            , binary = Nothing
-            , hex = Nothing
-            , octal = Nothing
-            , int = Just (Float_ << toFloat)
-            }
+        [ map Float_ <|
+            oneOf
+                [ succeed negate
+                    |. symbol "-"
+                    |= myNumber
+                , myNumber
+                ]
         , map (\_ -> Boolean True) (keyword "true")
         , map (\_ -> Boolean True) (keyword "#t")
         , map (\_ -> Boolean False) (keyword "false")

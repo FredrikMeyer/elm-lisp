@@ -54,7 +54,13 @@ value val =
         Function f ->
             case f of
                 NumericFloat function ->
-                    "`function: " ++ function.name ++ "`"
+                    "`native_function: " ++ function.name ++ "`"
+
+                FloatFloatBoolFunction function ->
+                    "`native_function: " ++ function.name ++ "`"
+
+                UserFunction _ ->
+                    "`user_function`"
 
         ValueError e ->
             case e of

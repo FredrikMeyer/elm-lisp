@@ -6,6 +6,7 @@ import LispParser
 import Printer
 import Result exposing (Result(..))
 import Types exposing (..)
+import Util exposing (filterMaybe)
 
 
 eval : Environment -> Sexp -> ( Environment, Sexp )
@@ -16,7 +17,7 @@ eval env sexp =
                 Symbol str ->
                     case Environment.get str env of
                         Nothing ->
-                            ( env, SexpError (ErrorMessage "Unknown var") )
+                            ( env, SexpError (ErrorMessage ("Unknown var: " ++ str)) )
 
                         Just var ->
                             ( env, Val var )
@@ -52,16 +53,53 @@ eval env sexp =
                                         evaluatedVal =
                                             toValue env v
 
-                                        scopedEnv =
-                                            Environment.set key evaluatedVal env
+                                        extendedEnv =
+                                            Environment.extend env
+                                                |> Environment.set key evaluatedVal
 
                                         ( newEnv, res ) =
-                                            eval scopedEnv rest
+                                            eval extendedEnv rest
                                     in
                                     ( env, res )
 
                                 _ ->
                                     ( env, SexpError <| ErrorMessage "Syntax error" )
+
+                        Val (Symbol "fn") ->
+                            case args of
+                                [ ListOfSexps a, rest ] ->
+                                    let
+                                        y =
+                                            Debug.log "rgs" args
+
+                                        values =
+                                            List.map (toValue env) a
+                                                |> List.map toSymbolString
+                                                |> filterMaybe
+
+                                        extendedEnv =
+                                            Environment.extend env
+
+                                        function =
+                                            case values of
+                                                Nothing ->
+                                                    -- TODO Check for distinct values
+                                                    ValueError <| TypeError "Parameter must be string"
+
+                                                Just strings ->
+                                                    Function <|
+                                                        UserFunction
+                                                            { body = rest
+                                                            , env = extendedEnv
+                                                            , params = strings
+                                                            }
+                                    in
+                                    ( env
+                                    , Val <| function
+                                    )
+
+                                _ ->
+                                    ( env, SexpError <| ErrorMessage "Syntax Error" )
 
                         Val (Symbol "do") ->
                             let
@@ -113,6 +151,11 @@ eval env sexp =
             ( env, sexp )
 
 
+
+-- TODO Denne er en mellomting mellom apply og en konvertør.
+-- Burde kun konvertere, ikke kalle på eval
+
+
 toValue : Environment -> Sexp -> Value
 toValue env sexp =
     case sexp of
@@ -139,6 +182,16 @@ toValue env sexp =
             ValueError e
 
 
+toSymbolString : Value -> Maybe String
+toSymbolString val =
+    case val of
+        Symbol s ->
+            Just s
+
+        _ ->
+            Nothing
+
+
 apply : Value -> List Value -> Value
 apply val args =
     case val of
@@ -156,6 +209,40 @@ apply val args =
                         Ok b ->
                             Float_ b
 
+                FloatFloatBoolFunction function ->
+                    case args of
+                        [ Float_ a, Float_ b ] ->
+                            Boolean <| function.f a b
+
+                        _ ->
+                            ValueError <| ErrorMessage "< only accepts numbers."
+
+                UserFunction { env, params, body } ->
+                    let
+                        updatedEnv =
+                            List.foldr
+                                (\a -> \newEnv -> Environment.set a.name a.val newEnv)
+                                env
+                                (List.map2
+                                    (\a ->
+                                        \b ->
+                                            { val = a
+                                            , name = b
+                                            }
+                                    )
+                                    args
+                                    params
+                                )
+
+                        l =
+                            Debug.log "updenv" updatedEnv
+
+                        evaluated =
+                            eval updatedEnv body
+                    in
+                    toValue updatedEnv (Tuple.second evaluated)
+
+        -- ValueError <| ErrorMessage "Not implemented"
         Boolean _ ->
             ValueError <| TypeError "Cannot apply bool"
 
