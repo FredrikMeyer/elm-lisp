@@ -39,3 +39,13 @@ textarea {
     font-size: 20px;
     height: 100%;
 }
+
+#shortcuts {
+    display: flex;
+    padding: 10px;
+}
+
+#shortcuts button {
+    margin: 20px;
+    font-size: 20px;
+}

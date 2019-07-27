@@ -20,21 +20,32 @@ type alias Model =
     }
 
 
+initialModel =
+    { inputText = ""
+    , results = []
+    , inputs = []
+    , environment = Environment.initialEnvironment
+    }
+
+
 type Msg
     = FormSubmitted
     | InputText String
     | CmdEnter
+    | ShortcutMsg Shortcut
+
+
+type Shortcut
+    = Lambda
+    | Let
+    | Def
+    | Do
+    | If
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { inputText = ""
-      , results = []
-      , inputs = []
-      , environment = Environment.initialEnvironment
-      }
-    , Cmd.none
-    )
+    ( initialModel, Cmd.none )
 
 
 main : Program () Model Msg
@@ -68,7 +79,7 @@ view model =
                 , Html.button
                     [ Attributes.id "button"
                     ]
-                    [ text "Trykk"
+                    [ text "Submit"
                     ]
                 ]
             , div
@@ -77,6 +88,33 @@ view model =
                 [ listOfValues model.inputs
                 , listOfValues model.results
                 ]
+            ]
+        , div [ Attributes.id "shortcuts" ]
+            [ Html.button
+                [ Html.Events.onClick <| ShortcutMsg Lambda
+                ]
+                [ text <| shortcutToString Lambda
+                ]
+            , Html.button
+                [ Html.Events.onClick <| ShortcutMsg Let ]
+                [ text <| shortcutToString Let
+                ]
+            , Html.button
+                [ Html.Events.onClick <| ShortcutMsg Def ]
+                [ text <| shortcutToString Def
+                ]
+            , Html.button
+                [ Html.Events.onClick <| ShortcutMsg If ]
+                [ text <| shortcutToString If ]
+            , Html.button
+                [ Html.Events.onClick <| ShortcutMsg Do ]
+                [ text <| shortcutToString Do ]
+            ]
+        , div []
+            [ text "See this page's "
+            , Html.a
+                [ Attributes.href "https://github.com/FredrikMeyer/elm-lisp" ]
+                [ text " Github page." ]
             ]
         ]
 
@@ -132,6 +170,32 @@ update msg model =
                     }
             in
             ( newModel, Cmd.none )
+
+        ShortcutMsg shortcut ->
+            let
+                newInput =
+                    model.inputText ++ " " ++ shortcutToString shortcut
+            in
+            ( { model | inputText = newInput }, Cmd.none )
+
+
+shortcutToString : Shortcut -> String
+shortcutToString shortcut =
+    case shortcut of
+        Lambda ->
+            "(fn (x) x)"
+
+        Let ->
+            "(let (a 2) a)"
+
+        Def ->
+            "(def! a 2)"
+
+        Do ->
+            "(do (def! b 1) 3)"
+
+        If ->
+            "(if (> 2 3) \"hei\")"
 
 
 submitCommandToLisp : Model -> ( String, Environment )

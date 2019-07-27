@@ -11,7 +11,7 @@ I try to follow the instructions at [Mal](https://github.com/kanaka/mal/blob/mas
 - [x] Step 3: Environments (implemented `let` instead of `let*`)
 - [x] Step 4: If fn do (mostly)
 - [ ] Step 5: Tail call optimization
-- [ ] Step 6: Files, mutation, and evil
+- [ ] Step 6: Files, mutation, and evil (files are maybe not necessary!?)
 - [ ] Step 7: Quoting
 - [ ] Step 8: Macros 
 - [ ] Step 9: Try 
@@ -42,4 +42,4 @@ for live updates.
 
 # TODOs
 
- - [ ] Use [CodeMirror](https://codemirror.net/doc/manual.html) to get a better editor. I.e. don't do any HTML in Elm.
+ - [ ] Maybe use [CodeMirror](https://codemirror.net/doc/manual.html) to get a better editor. I.e. don't do any HTML in Elm.

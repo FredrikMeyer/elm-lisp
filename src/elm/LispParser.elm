@@ -16,14 +16,13 @@ parseSexp : String -> Sexp
 parseSexp text =
     let
         expr =
-            Parser.run sexp text
+            Parser.run sexp <| String.trim text
     in
     case expr of
         Ok sexp_ ->
             sexp_
 
         Err error ->
-            --            error
             "parserError"
                 |> ParserError
                 |> SexpError
@@ -33,7 +32,7 @@ parseValue : String -> Value
 parseValue text =
     let
         expr =
-            Parser.run value text
+            Parser.run value <| String.trim text
     in
     case expr of
         Ok val ->

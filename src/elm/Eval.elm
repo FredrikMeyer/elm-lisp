@@ -236,7 +236,6 @@ apply val args =
                     in
                     toValue updatedEnv (Tuple.second evaluated)
 
-        -- ValueError <| ErrorMessage "Not implemented"
         Boolean _ ->
             ValueError <| TypeError "Cannot apply bool"
 
