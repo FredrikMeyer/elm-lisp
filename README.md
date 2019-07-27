@@ -39,3 +39,7 @@ Or
 elm-test --watch
 ```
 for live updates.
+
+# TODOs
+
+ - [ ] Use [CodeMirror](https://codemirror.net/doc/manual.html) to get a better editor. I.e. don't do any HTML in Elm.
