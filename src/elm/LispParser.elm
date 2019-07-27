@@ -100,6 +100,6 @@ value =
             variable
                 { start = \c -> Char.isAlphaNum c || (c /= '(' && c /= ')' && c /= ' ')
                 , inner = \c -> Char.isAlphaNum c || (c /= '(' && c /= ')' && c /= ' ')
-                , reserved = Set.fromList [ "fn", "do", "if", "let", "def!" ]
+                , reserved = Set.fromList [ "" ]
                 }
         ]
