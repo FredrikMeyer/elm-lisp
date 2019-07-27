@@ -5,17 +5,9 @@ import List exposing (foldr)
 
 combineMaybes : Maybe a -> Maybe (List a) -> Maybe (List a)
 combineMaybes ma la =
-    case ma of
-        Nothing ->
-            Nothing
-
-        Just a ->
-            case la of
-                Nothing ->
-                    Nothing
-
-                Just l ->
-                    Just (a :: l)
+    Maybe.andThen
+        (\a -> Maybe.map (\l -> a :: l) la)
+        ma
 
 
 filterMaybe : List (Maybe a) -> Maybe (List a)

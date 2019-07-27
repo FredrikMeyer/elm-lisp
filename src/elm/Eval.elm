@@ -2,8 +2,6 @@ module Eval exposing (eval)
 
 import Dict exposing (Dict, get)
 import Environment
-import LispParser
-import Printer
 import Result exposing (Result(..))
 import Types exposing (..)
 import Util exposing (filterMaybe)
@@ -57,7 +55,7 @@ eval env sexp =
                                             Environment.extend env
                                                 |> Environment.set key evaluatedVal
 
-                                        ( newEnv, res ) =
+                                        ( _, res ) =
                                             eval extendedEnv rest
                                     in
                                     ( env, res )
@@ -136,7 +134,7 @@ eval env sexp =
                             in
                             ( env
                             , Val <|
-                                apply (toValue env <| Tuple.second (eval env f)) <|
+                                apply proc <|
                                     (args
                                         |> List.map (eval env)
                                         |> List.map Tuple.second
@@ -169,7 +167,7 @@ toValue env sexp =
                 Val v ->
                     v
 
-                ListOfSexps l ->
+                ListOfSexps _ ->
                     ValueError <| ErrorMessage "Should be val :/"
 
                 SexpError error ->
@@ -250,11 +248,6 @@ apply val args =
 
         ValueError _ ->
             val
-
-
-applyFunction : F -> List Value -> Result Error Value
-applyFunction f args =
-    Err <| ErrorMessage "Not all ints"
 
 
 applyFloatFunction : FloatFloatFloatFunction -> Float -> List Value -> Result Error Float

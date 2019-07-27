@@ -1,6 +1,6 @@
 module Environment exposing (extend, find, get, initialEnvironment, set)
 
-import Dict exposing (Dict)
+import Dict
 import Types exposing (..)
 
 
@@ -28,12 +28,13 @@ find key env =
 
 get : String -> Environment -> Maybe Value
 get key env =
-    case find key env of
-        Nothing ->
-            Nothing
-
-        Just (Environment { vars }) ->
-            Dict.get key vars
+    find key env
+        |> Maybe.andThen
+            (\env_ ->
+                case env_ of
+                    Environment { vars } ->
+                        Dict.get key vars
+            )
 
 
 extend : Environment -> Environment

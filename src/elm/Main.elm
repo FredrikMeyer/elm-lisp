@@ -20,6 +20,7 @@ type alias Model =
     }
 
 
+initialModel : Model
 initialModel =
     { inputText = ""
     , results = []
@@ -195,7 +196,7 @@ shortcutToString shortcut =
             "(do (def! b 1) 3)"
 
         If ->
-            "(if (> 2 3) \"hei\")"
+            "(if (> 2 3) 42 24)"
 
 
 submitCommandToLisp : Model -> ( String, Environment )

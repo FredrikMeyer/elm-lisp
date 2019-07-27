@@ -22,7 +22,7 @@ parseSexp text =
         Ok sexp_ ->
             sexp_
 
-        Err error ->
+        Err _ ->
             "parserError"
                 |> ParserError
                 |> SexpError
@@ -38,7 +38,7 @@ parseValue text =
         Ok val ->
             val
 
-        Err error ->
+        Err _ ->
             ValueError <| ParserError "parsererror"
 
 
@@ -100,6 +100,6 @@ value =
             variable
                 { start = \c -> Char.isAlphaNum c || (c /= '(' && c /= ')' && c /= ' ')
                 , inner = \c -> Char.isAlphaNum c || (c /= '(' && c /= ')' && c /= ' ')
-                , reserved = Set.fromList []
+                , reserved = Set.fromList [ "fn", "do", "if", "let", "def!" ]
                 }
         ]

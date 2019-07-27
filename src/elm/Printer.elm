@@ -35,12 +35,11 @@ value : Value -> String
 value val =
     case val of
         Boolean b ->
-            case b of
-                True ->
-                    "#t"
+            if b then
+                "#t"
 
-                False ->
-                    "#f"
+            else
+                "#f"
 
         Float_ f ->
             String.fromFloat f
