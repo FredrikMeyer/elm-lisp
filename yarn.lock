@@ -709,10 +709,10 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-vite-plugin-elm@^2.6.1:
-  version "2.6.1"
-  resolved "https://registry.npmjs.org/vite-plugin-elm/-/vite-plugin-elm-2.6.1.tgz"
-  integrity sha512-z+jAyEHOxi5cfLLGcpTzL8sOgvbpU9qMTGRB5l2d1OXlldIrsTxUacxNre2IvegBOqX0WWlPlUfQZEn+CR3E8A==
+vite-plugin-elm@^2.7.2:
+  version "2.7.2"
+  resolved "https://registry.yarnpkg.com/vite-plugin-elm/-/vite-plugin-elm-2.7.2.tgz#134e2233c32ab07eae1f2710f22b5a7597edea69"
+  integrity sha512-iOp89Jg5AROb4GApyyWjKqspqIx9cGzPxHKX9JxPTdCd1cUVlqhJPWEJOTar0FcknzCsShm4XQQ3XbCtnCHsyQ==
   dependencies:
     acorn "^8.0.0"
     acorn-walk "^8.0.0"
